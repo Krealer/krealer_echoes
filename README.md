@@ -78,6 +78,25 @@ If you're reading this and you're a dev interested in handheld Lua development o
 
 ---
 
+## 🛠️ Development Setup & Testing
+
+To run the automated test suite you'll need a local Lua environment.
+
+1. **Install Lua** – version 5.4 is recommended. Any standard package manager or build from source will work.
+2. **Install LuaRocks** – the Lua package manager.
+3. **Install Busted** – the testing framework:
+   ```bash
+   luarocks install busted
+   ```
+4. From the repository root run the tests with:
+   ```bash
+   busted
+   ```
+
+Tests are located under the `tests/` directory and cover utilities, map logic, inventory operations, and entity management.
+
+---
+
 ## ⚠️ Known Issues
 
 * Combat outcomes occasionally skipped turns **(resolved)**

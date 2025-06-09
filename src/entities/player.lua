@@ -3,6 +3,10 @@
 -- Controls Krealer's position, movement, and interaction logic
 --========================================
 
+local map = require("src.map")
+local entityManager = require("src.entities.entity_manager")
+local interactions = require("src.interactions")
+
 player = {}
 
 -- Position (in tile coordinates)
@@ -39,12 +43,14 @@ function player:tryMove(dx, dy)
     local newX = self.x + dx
     local newY = self.y + dy
 
-    -- Map boundaries
-    if newX < 0 or newY < 0 or newX >= config.mapWidth or newY >= config.mapHeight then
+    -- Map boundaries are one-based like map.isWalkable
+    if newX < 1 or newY < 1 or newX > config.mapWidth or newY > config.mapHeight then
         return
     end
 
-    -- TODO: block movement into solid tiles if needed
+    -- Block movement into walls or occupied tiles
+    if not map.isWalkable(newX, newY) then return end
+    if entityManager:getAt(newX, newY) then return end
 
     -- Move
     self.x = newX
@@ -57,7 +63,7 @@ end
 --========================================
 function player:keypressed(key)
     if key == "space" or key == "return" then
-        checkInteraction()
+        interactions.check()
     elseif key == "i" then
         state:set("inventory")
     end

@@ -10,6 +10,7 @@ combat = {}
 combat.active = false
 combat.playerTurn = true
 combat.enemy = nil
+local enemyTimer = 0
 
 -- Krealer's combat stats (expandable with passives/status)
 combat.player = {
@@ -44,6 +45,7 @@ function combat:start(enemyData)
     self.player.mp = self.player.maxMp
     self.playerTurn = true
     self.active = true
+    enemyTimer = 0.5
     print("[Combat started with " .. self.enemy.name .. "]")
 end
 
@@ -81,6 +83,7 @@ function combat:enemyAction()
     self:checkOutcome()
     if self.active then
         self.playerTurn = true
+        enemyTimer = 0.5
     end
 end
 
@@ -142,6 +145,9 @@ end
 --========================================
 function combat:update(dt)
     if self.active and not self.playerTurn then
-        self:enemyAction()
+        enemyTimer = enemyTimer - dt
+        if enemyTimer <= 0 then
+            self:enemyAction()
+        end
     end
 end

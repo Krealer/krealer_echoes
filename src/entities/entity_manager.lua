@@ -4,7 +4,7 @@
 -- Provides lookup, spawn, draw, and clear logic
 --========================================
 
-entityManager = {}
+local entityManager = {}
 
 -- Holds all active entities on the current map
 entityManager.entities = {}
@@ -30,7 +30,7 @@ end
 -- Return entity at a given tile position (x, y)
 -- Only one entity per tile assumed
 --========================================
-function getEntityAt(x, y)
+function entityManager:getAt(x, y)
     for _, e in ipairs(entityManager.entities) do
         if e.x == x and e.y == y then
             return e
@@ -44,7 +44,7 @@ end
 -- Symbols:
 --  🟢 NPC = "N", 🔴 Enemy = "E", 🟡 Object = "O"
 --========================================
-function drawEntities()
+function entityManager:draw()
     local tile = config.tileSize
 
     for _, e in ipairs(entityManager.entities) do
@@ -66,3 +66,5 @@ function drawEntities()
         love.graphics.print(char, e.x * tile + 8, e.y * tile + 8)
     end
 end
+
+return entityManager

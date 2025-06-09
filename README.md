@@ -80,10 +80,10 @@ If you're reading this and you're a dev interested in handheld Lua development o
 
 ## ⚠️ Known Issues
 
-* Combat outcomes don’t always resolve properly
-* Dialogue trees may break if malformed
-* Fullscreen toggle not centered on all resolutions
-* NPC/Entity overlap behavior needs refining
+* Combat outcomes occasionally skipped turns **(resolved)**
+* Dialogue trees may break if nodes are missing – now validated on selection
+* Fullscreen toggle not centered on all resolutions – centering logic improved
+* NPC/Entity overlap behavior needs refining – movement now checks occupied tiles
 
 ---
 

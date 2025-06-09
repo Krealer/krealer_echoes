@@ -4,10 +4,12 @@
 -- Includes dynamic centering and scaling
 --========================================
 
-map = {}
+local entityManager = require("src.entities.entity_manager")
+
+local map = {}
 
 -- Draw the tile grid with centering and scaling
-function drawMap(tileGrid)
+function map.draw(tileGrid)
     local tileSize = config.tileSize
     local mapWidth = config.mapWidth * tileSize
     local mapHeight = config.mapHeight * tileSize
@@ -39,16 +41,18 @@ function drawMap(tileGrid)
     end
 
     -- Draw entities + player in scaled space
-    drawEntities()
+    entityManager:draw()
     player:draw()
 
     love.graphics.pop() -- Reset transform for UI
 end
 
 -- Check if a tile is walkable
-function isWalkable(x, y)
+function map.isWalkable(x, y)
     if x < 1 or y < 1 or x > config.mapWidth or y > config.mapHeight then
         return false
     end
     return currentMap.tiles[y][x] == 0
 end
+
+return map

@@ -18,6 +18,13 @@ function dialogue_state:enter(context)
     end
 
     dialogueTree = context.tree
+
+    if not dialogueTree.start then
+        print("[Dialogue error] Tree missing 'start' node")
+        state:set("exploration")
+        return
+    end
+
     currentNode = dialogueTree.start
 
     print("[Dialogue started]")

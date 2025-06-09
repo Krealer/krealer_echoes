@@ -5,6 +5,8 @@
 --========================================
 
 local exploration_state = {}
+local map = require("src.map")
+local interactions = require("src.interactions")
 
 -- Optional: track time since last interaction or event
 local interactionCooldown = 0.1
@@ -22,11 +24,8 @@ end
 
 function exploration_state:draw()
     if currentMap and currentMap.tiles then
-        drawMap(currentMap.tiles)
+        map.draw(currentMap.tiles)
     end
-
-    drawEntities()
-    player:draw()
 
     if config.debug then
         game:drawDebug(10, 10)
@@ -40,7 +39,7 @@ function exploration_state:keypressed(key)
 
     -- Interaction
     if input:matches(key, config.controls.interact) then
-        checkInteraction()
+        interactions.check()
         timer = interactionCooldown
     end
 end

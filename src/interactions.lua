@@ -6,31 +6,21 @@
 
 -- Dependencies
 local utils = require("src.utils")
+local entityManager = require("src.entities.entity_manager")
 
---========================================
--- Get any entity at a given position
--- (Typically defined in entity_manager)
---========================================
-function getEntityAt(x, y)
-    for _, entity in ipairs(entityManager.entities) do
-        if entity.x == x and entity.y == y then
-            return entity
-        end
-    end
-    return nil
-end
+local interactions = {}
 
 --========================================
 -- Main interaction logic:
 -- Checks tiles around Krealer
 -- Triggers proper state/module
 --========================================
-function checkInteraction()
+function interactions.check()
     for _, dir in ipairs(utils.directions) do
         local tx = player.x + dir.x
         local ty = player.y + dir.y
 
-        local entity = getEntityAt(tx, ty)
+        local entity = entityManager:getAt(tx, ty)
         if entity then
             if entity.type == "npc" then
                 local npc = require("src.npc." .. entity.name:lower())
@@ -51,3 +41,5 @@ function checkInteraction()
     -- No valid interaction found
     print("There's nothing to engage with.")
 end
+
+return interactions

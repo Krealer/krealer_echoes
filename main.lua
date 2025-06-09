@@ -4,19 +4,19 @@
 -- Initializes subsystems, draws game loop, delegates input
 --========================================
 
--- Core modules (loaded in global scope)
-require("src.config")
-require("src.state")                      -- State manager
-require("src.game")                       -- Global flags/init
-require("src.utils")                      -- Direction helpers
-require("src.input")                      -- Input handling
-require("src.map")                        -- Map loading
-require("src.entities.player")            -- Player entity
-require("src.entities.entity_manager")    -- All interactables
-require("src.interactions")               -- Tile interaction logic
-require("src.dialogue")                   -- Dialogue system
-require("src.inventory")                  -- Inventory logic
-require("src.combat")                     -- Combat engine
+-- Core modules
+local config        = require("src.config")
+local state         = require("src.state")
+local game          = require("src.game")
+local utils         = require("src.utils")
+local input         = require("src.input")
+local map           = require("src.map")
+local player        = require("src.entities.player")
+local entityManager = require("src.entities.entity_manager")
+local interactions  = require("src.interactions")
+local dialogue      = require("src.dialogue")
+local inventory     = require("src.inventory")
+local combat        = require("src.combat")
 
 --========================================
 -- love.load: Called once on game startup

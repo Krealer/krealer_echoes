@@ -3,7 +3,7 @@
 **Genre:** Tactical Turn-Based RPG with Psychological Dialogue
 **Engine:** [LOVE2D](https://love2d.org/) (LÖVE)
 **Language:** Lua
-**Platform Target:** Homebrewed Nintendo Switch (`.nro`) and Nintendo 3DS (`.3dsx`)
+**Platform Target:** PC, Nintendo Switch and Nintendo 3DS
 
 ---
 

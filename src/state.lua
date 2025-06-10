@@ -23,6 +23,11 @@ local controlsUI  = require("src.states.controls_state")
 -- Set the current state and optional context
 --========================================
 function state:set(newState, context)
+    if currentState == "dialogue" and newState ~= "dialogue" then
+        local ctx = state.context or {}
+        if ctx.onExit then ctx.onExit() end
+    end
+
     currentState = newState
     state.context = context or {}
 
@@ -31,7 +36,7 @@ function state:set(newState, context)
     -- Initialize if needed
     if newState == "dialogue" then
         local target = context and context.tree
-        dialogue:enter({ tree = target })
+        dialogue:enter({ tree = target, start = context and context.start, npc = context and context.npc })
     elseif newState == "combat" then
         combat:start(context.enemy)
     elseif newState == "inventory" then

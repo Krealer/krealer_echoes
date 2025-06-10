@@ -4,7 +4,12 @@
 -- Supports dialogue branching and interaction memory
 --========================================
 
+local game = require("src.game")
+
 local jayson = {}
+jayson.id = "jayson"
+jayson.memory = game.flags.npc[jayson.id] or {}
+game.flags.npc[jayson.id] = jayson.memory
 
 -- Track whether player has spoken to Jayson
 jayson.hasSpoken = false
@@ -16,10 +21,18 @@ function jayson:onInteract()
 
     -- Load dialogue from external tree
     local dialogueTree = require("src.npc_dialogue.jayson_dialogue")
-    state:set("dialogue", { tree = dialogueTree })
 
-    -- Mark that we’ve initiated conversation
-    jayson.hasSpoken = true
+    local startKey = "start"
+    if self.memory.intimidated and dialogueTree.intimidated_repeat then
+        startKey = "intimidated_repeat"
+    elseif self.memory.trusted and dialogueTree.trust_repeat then
+        startKey = "trust_repeat"
+    end
+
+    state:set("dialogue", { tree = dialogueTree, npc = self, start = startKey })
+
+    self.hasSpoken = true
+    self.memory.met = true
 end
 
 return jayson

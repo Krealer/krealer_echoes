@@ -4,6 +4,8 @@
 -- Cold vs human responses, subtle probing of Krealer's past
 --========================================
 
+local game = require("src.game")
+
 return {
     start = {
         text = "You're not from around here, are you? You look... off.",
@@ -52,6 +54,7 @@ return {
 
     intimidate = {
         text = "H-Hey, I'm just trying to be friendly. Don't get weird.",
+        onSelect = function() game.flags.npc.jayson.intimidated = true end,
         choices = {
             { text = "Then don't ask questions you aren't ready to answer.", next = "end_convo" }
         }
@@ -74,6 +77,7 @@ return {
 
     respect = {
         text = "Huh. Guess that took some guts. I won't ask more.",
+        onSelect = function() game.flags.npc.jayson.trusted = true end,
         choices = {
             { text = "Good.", next = "end_convo" },
             { text = "Thanks.", next = "end_convo" }
@@ -85,6 +89,23 @@ return {
         choices = {
             { text = "Physically. Not mentally.", next = "end_convo" },
             { text = "Out enough to be dangerous.", next = "end_convo" }
+        }
+    },
+
+    trust_repeat = {
+        text = "Hey, good to see you again. Need anything?",
+        requires = { trusted = true },
+        choices = {
+            { text = "Any supplies?", next = "end_convo", reward = { name = "Medkit", type = "healing", effect = 20 } },
+            { text = "Just checking in.", next = "end_convo" }
+        }
+    },
+
+    intimidated_repeat = {
+        text = "Oh... it's you again. I don't want any trouble.",
+        requires = { intimidated = true },
+        choices = {
+            { text = "Then keep quiet.", next = "end_convo" }
         }
     },
 

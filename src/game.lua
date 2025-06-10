@@ -27,6 +27,9 @@ game.flags = {
     zonesTriggered = {}
 }
 
+-- Conditioning metrics representing Null influence over Krealer
+game.conditioning = { influence = 70, resistance = 0 }
+
 --========================================
 -- Game boot logic (call in love.load)
 --========================================

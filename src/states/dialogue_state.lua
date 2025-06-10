@@ -21,6 +21,47 @@ local inventory = require("src.inventory")
 local game = require("src.game")
 local traits = require("src.traits")
 
+local function processChoice(choice)
+    if not choice then return end
+    if choice.reward then inventory:add(choice.reward) end
+    if choice.map then
+        local map = require("src.maps." .. choice.map)
+        currentMap = map
+        game.flags.currentMap = choice.map
+        currentMap:load()
+    end
+    if choice.repChange then
+        game.flags.reputation = game.flags.reputation + choice.repChange
+    end
+    if choice.historyKey then
+        game.flags.dialogueHistory[choice.historyKey] = true
+    end
+    if choice.state then
+        state:set(choice.state)
+        if choice.state ~= "dialogue" then
+            return
+        end
+    end
+    local nextKey = choice.next
+    local nextNode = nextKey and dialogueTree[nextKey]
+    if nextNode and nextNode.requires and not meetsRequirements(nextNode.requires, activeNPC) then
+        nextNode = nil
+    end
+    if nextNode then
+        currentNode = nextNode
+        if currentNode.onSelect then currentNode.onSelect() end
+        if currentNode.triggerNull then
+            state:nullTrigger({ text = currentNode.text })
+            if currentNode.choices and currentNode.choices[1] then
+                processChoice(currentNode.choices[1])
+            end
+        end
+    elseif nextKey then
+        print("[Dialogue node missing: " .. tostring(nextKey) .. "]")
+        state:set("exploration")
+    end
+end
+
 -- Dialogue context (set when state is entered)
 local dialogueTree = nil
 local currentNode = nil
@@ -58,6 +99,13 @@ function dialogue_state:enter(context)
 
     if currentNode.onSelect then
         currentNode.onSelect()
+    end
+
+    if currentNode.triggerNull then
+        state:nullTrigger({ text = currentNode.text })
+        if currentNode.choices and currentNode.choices[1] then
+            processChoice(currentNode.choices[1])
+        end
     end
 
     print("[Dialogue started]")
@@ -98,55 +146,17 @@ end
 -- Handle input: pick a response (1–4)
 function dialogue_state:keypressed(key)
     if not currentNode or not currentNode.choices then return end
+    if currentNode.triggerNull then return end
 
     local index = tonumber(key)
     if index and currentNode.choices[index] then
         local choice = currentNode.choices[index]
-
         if choice.repMin and game.flags.reputation < choice.repMin then return end
         if choice.requiresHistory and not game.flags.dialogueHistory[choice.requiresHistory] then return end
         if choice.requiresTrait and not traits:has(choice.requiresTrait) then return end
         if choice.requires and not meetsRequirements(choice.requires, activeNPC) then return end
 
-        if choice.reward then
-            inventory:add(choice.reward)
-        end
-
-        if choice.map then
-            local map = require("src.maps." .. choice.map)
-            currentMap = map
-            game.flags.currentMap = choice.map
-            currentMap:load()
-        end
-
-        if choice.repChange then
-            game.flags.reputation = game.flags.reputation + choice.repChange
-        end
-        if choice.historyKey then
-            game.flags.dialogueHistory[choice.historyKey] = true
-        end
-
-        if choice.state then
-            state:set(choice.state)
-            if choice.state ~= "dialogue" then
-                return
-            end
-        end
-
-        local nextKey = choice.next
-        local nextNode = nextKey and dialogueTree[nextKey]
-        if nextNode and nextNode.requires and not meetsRequirements(nextNode.requires, activeNPC) then
-            nextNode = nil
-        end
-        if nextNode then
-            currentNode = nextNode
-            if currentNode.onSelect then
-                currentNode.onSelect()
-            end
-        elseif nextKey then
-            print("[Dialogue node missing: " .. tostring(nextKey) .. "]")
-            state:set("exploration")
-        end
+        processChoice(choice)
     elseif key == "escape" then
         state:set("exploration")
     end

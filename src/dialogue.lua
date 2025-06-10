@@ -24,6 +24,18 @@ local function meetsRequirements(req, memory, shared)
     return true
 end
 
+-- Conditioning requirement helper
+local function meetsConditioning(req)
+    if not req then return true end
+    local inf = game.conditioning and game.conditioning.influence or 0
+    local res = game.conditioning and game.conditioning.resistance or 0
+    if req.minInfluence and inf < req.minInfluence then return false end
+    if req.maxInfluence and inf > req.maxInfluence then return false end
+    if req.minResistance and res < req.minResistance then return false end
+    if req.maxResistance and res > req.maxResistance then return false end
+    return true
+end
+
 local function meetsRepRequirement(req)
     if not req then return true end
     local current = game:getReputation(req.region)
@@ -75,6 +87,14 @@ function dialogue:start(context)
             startNode = tree.start
         end
     end
+    if not meetsConditioning(startNode.requiresConditioning) then
+        if startNode.unmet then
+            startNode = tree[startNode.unmet]
+        else
+            print("[Dialogue] Conditioning requirements unmet")
+            startNode = tree.start
+        end
+    end
     self.currentNode = startNode
 end
 
@@ -98,6 +118,9 @@ function dialogue:getChoices()
             ok = false
         end
         if ok and not meetsRepRequirement(choice.requiresReputation) then
+            ok = false
+        end
+        if ok and not meetsConditioning(choice.requiresConditioning) then
             ok = false
         end
         if ok then
@@ -125,6 +148,10 @@ function dialogue:advanceTo(nextKey)
     end
     if nextNode.requiresReputation and not meetsRepRequirement(nextNode.requiresReputation) then
         print("[Dialogue] Reputation not sufficient for node: " .. tostring(nextKey))
+        return
+    end
+    if not meetsConditioning(nextNode.requiresConditioning) then
+        print("[Dialogue] Conditioning requirement failed for node: " .. tostring(nextKey))
         return
     end
 

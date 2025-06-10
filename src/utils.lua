@@ -126,4 +126,14 @@ function utils.triggerZone(name)
     zone.trigger(name)
 end
 
+-- Roll to resist Null conditioning influence
+function utils.rollConditioningCheck(difficulty)
+    difficulty = difficulty or 50
+    local roll = math.random(1, 100)
+    local inf = game.conditioning and game.conditioning.influence or 0
+    local res = game.conditioning and game.conditioning.resistance or 0
+    local score = roll + res - inf
+    return score >= difficulty
+end
+
 return utils

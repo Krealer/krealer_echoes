@@ -26,4 +26,16 @@ describe("utils", function()
     local last = tiles[#tiles]
     assert.are.same({x=4, y=1}, last)
   end)
+
+  it("rolls conditioning checks", function()
+    game = { conditioning = { influence = 0, resistance = 100 } }
+    local oldRand = math.random
+    math.random = function() return 50 end
+    assert.is_true(utils.rollConditioningCheck(60))
+    game.conditioning.influence = 100
+    game.conditioning.resistance = 0
+    math.random = function() return 1 end
+    assert.is_false(utils.rollConditioningCheck(50))
+    math.random = oldRand
+  end)
 end)

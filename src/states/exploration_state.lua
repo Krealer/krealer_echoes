@@ -7,6 +7,7 @@
 local exploration_state = {}
 local map = require("src.map")
 local interactions = require("src.interactions")
+local npcAI = require("src.npc.ai")
 
 -- Optional: track time since last interaction or event
 local interactionCooldown = 0.1
@@ -20,6 +21,7 @@ function exploration_state:update(dt)
     timer = timer - dt
 
     player:update(dt)
+    npcAI:update(dt)
 end
 
 function exploration_state:draw()

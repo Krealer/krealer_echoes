@@ -24,7 +24,8 @@ game.flags = {
     sharedFlags = {},        -- optional flags shared between NPCs
     showFOV = false,
     echoFlags = {},
-    zonesTriggered = {}
+    zonesTriggered = {},
+    shrinesVisited = {}
 }
 
 -- Conditioning metrics representing Null influence over Krealer

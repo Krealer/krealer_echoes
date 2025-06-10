@@ -34,6 +34,11 @@ function interactions.check()
                 local objects = require("src.entities.objects")
                 objects.interact(entity)
                 return
+            elseif entity.type == "shrine" then
+                local zone = require("src.zone")
+                zone.trigger("shrine_heal")
+                game.flags.shrinesVisited[entity.name] = true
+                return
             end
         end
     end

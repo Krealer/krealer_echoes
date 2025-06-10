@@ -20,6 +20,7 @@ end
 local inventory = require("src.inventory")
 local game = require("src.game")
 local traits = require("src.traits")
+local journal = require("src.journal")
 
 local function processChoice(choice)
     if not choice then return end
@@ -36,6 +37,10 @@ local function processChoice(choice)
     if choice.historyKey then
         game.flags.dialogueHistory[choice.historyKey] = true
     end
+    if choice.journal then
+        local j = choice.journal
+        journal:addEntry(j.id, j.text, j.tags)
+    end
     if choice.state then
         state:set(choice.state)
         if choice.state ~= "dialogue" then
@@ -49,6 +54,10 @@ local function processChoice(choice)
     end
     if nextNode then
         currentNode = nextNode
+        if nextNode.journal then
+            local j = nextNode.journal
+            journal:addEntry(j.id, j.text, j.tags)
+        end
         if currentNode.onSelect then currentNode.onSelect() end
         if currentNode.triggerNull then
             state:nullTrigger({ text = currentNode.text })
@@ -96,6 +105,10 @@ function dialogue_state:enter(context)
         end
     end
     currentNode = startNode
+    if currentNode.journal then
+        local j = currentNode.journal
+        journal:addEntry(j.id, j.text, j.tags)
+    end
 
     if currentNode.onSelect then
         currentNode.onSelect()

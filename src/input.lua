@@ -61,3 +61,10 @@ function input:getNumberPressed(key)
     end
     return nil
 end
+
+--========================================
+-- Convenience for journal toggle
+--========================================
+function input:isJournalToggle(key)
+    return self:matches(key, "journal")
+end

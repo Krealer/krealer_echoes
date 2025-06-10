@@ -61,6 +61,8 @@ function exploration_state:keypressed(key)
         timer = interactionCooldown
     elseif key == "f2" then
         state:set("controls")
+    elseif input:isJournalToggle(key) then
+        state:set("journal", { returnTo = "exploration" })
     end
 end
 

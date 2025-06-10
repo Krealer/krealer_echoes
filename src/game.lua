@@ -42,6 +42,9 @@ game.psyche = {
 -- Set of unlocked psyche-based skills
 game.skillsUnlocked = {}
 
+-- Stored journal logs
+game.journalEntries = {}
+
 --========================================
 -- Game boot logic (call in love.load)
 --========================================

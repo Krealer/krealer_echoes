@@ -67,6 +67,9 @@ function love.keypressed(key)
         love.window.setFullscreen(not fullscreen)
         print("Fullscreen: " .. tostring(not fullscreen))
         return
+    elseif key == "v" then
+        game.flags.showFOV = not game.flags.showFOV
+        return
     end
 
     -- Pass other keys to state manager

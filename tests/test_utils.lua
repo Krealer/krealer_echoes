@@ -19,4 +19,11 @@ describe("utils", function()
     assert.are_not.equal(orig.b, copy.b)
     assert.are.same(orig, copy)
   end)
+
+  it("calculates vision cone tiles", function()
+    local tiles = utils.getTilesInViewCone(2,2,"right",2)
+    assert.are.equal(6, #tiles)
+    local last = tiles[#tiles]
+    assert.are.same({x=4, y=1}, last)
+  end)
 end)

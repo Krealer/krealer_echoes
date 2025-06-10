@@ -61,4 +61,34 @@ utils.directions = {
     {x = 1, y = 0}   -- right
 }
 
+-- Direction name lookup
+utils.directionVectors = {
+    up    = { x = 0, y = -1 },
+    down  = { x = 0, y = 1 },
+    left  = { x = -1, y = 0 },
+    right = { x = 1, y = 0 }
+}
+
+--========================================
+-- Return tiles in a simple vision cone
+-- Expands one tile to the sides per step
+--========================================
+function utils.getTilesInViewCone(x, y, direction, range)
+    local dir = utils.directionVectors[direction]
+    if not dir then return {} end
+
+    local tiles = {}
+    local perp = { x = -dir.y, y = dir.x }
+
+    for i = 1, range do
+        local cx = x + dir.x * i
+        local cy = y + dir.y * i
+        table.insert(tiles, { x = cx, y = cy })
+        table.insert(tiles, { x = cx + perp.x, y = cy + perp.y })
+        table.insert(tiles, { x = cx - perp.x, y = cy - perp.y })
+    end
+
+    return tiles
+end
+
 return utils

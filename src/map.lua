@@ -66,6 +66,7 @@ function map.draw(tileGrid)
     -- Draw entities + player in scaled space
     entityManager:draw()
     player:draw()
+    game:drawFOVOverlay()
 
     love.graphics.pop() -- Reset transform for UI
 end

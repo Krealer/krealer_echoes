@@ -42,4 +42,12 @@ function interactions.check()
     print("There's nothing to engage with.")
 end
 
+--========================================
+-- Called when a hostile entity spots the player
+--========================================
+function interactions.alert(entity)
+    print("[!] " .. (entity.name or "Enemy") .. " spotted you!")
+    state:set("combat", { enemy = entity })
+end
+
 return interactions

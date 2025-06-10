@@ -9,6 +9,9 @@ function M.run()
     if game and game.addReputation then
         game:addReputation("faith", 1)
     end
+    if journal then
+        journal:addEntry("shrine01", "Healing anomaly encountered at remote shrine.", {"location"})
+    end
     -- Return state change instruction
     return { state = "echo", context = { text = "An ancient shrine shimmers in your mind", duration = 2 } }
 end

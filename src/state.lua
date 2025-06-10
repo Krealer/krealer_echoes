@@ -19,6 +19,7 @@ local combat      = require("src.states.combat_state")
 local inventoryUI = require("src.states.inventory_state")
 local controlsUI  = require("src.states.controls_state")
 local echo        = require("src.states.echo_state")
+local journalUI   = require("src.states.journal_state")
 
 --========================================
 -- Trigger a Null hallucination effect and return to current state
@@ -56,6 +57,8 @@ function state:set(newState, context)
         controlsUI:enter(context)
     elseif newState == "echo" then
         echo:enter(context)
+    elseif newState == "journal" then
+        journalUI:enter(context)
     end
 end
 
@@ -89,6 +92,8 @@ function state:update(dt)
         controlsUI:update(dt)
     elseif currentState == "echo" then
         echo:update(dt)
+    elseif currentState == "journal" then
+        journalUI:update(dt)
     end
 end
 
@@ -111,6 +116,9 @@ function state:draw()
         controlsUI:draw()
     elseif currentState == "echo" then
         echo:draw()
+    elseif currentState == "journal" then
+        exploration:draw()
+        journalUI:draw()
     end
 end
 
@@ -130,5 +138,7 @@ function state:keypressed(key)
         controlsUI:keypressed(key)
     elseif currentState == "echo" then
         echo:keypressed(key)
+    elseif currentState == "journal" then
+        journalUI:keypressed(key)
     end
 end

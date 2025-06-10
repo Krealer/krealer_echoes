@@ -7,6 +7,7 @@
 local dialogue = {}
 local game = require("src.game")
 local psyche = require("src.psyche")
+local journal = require("src.journal")
 
 -- Helper to check memory requirements
 local function meetsRequirements(req, memory, shared)
@@ -142,6 +143,10 @@ function dialogue:advanceTo(nextKey, choice)
     if choice and choice.psycheTag then
         psyche:add(choice.psycheTag, 1)
     end
+    if choice and choice.journal then
+        local j = choice.journal
+        journal:addEntry(j.id, j.text, j.tags)
+    end
     if not self.tree or not self.tree[nextKey] then
         print("[Warning] Missing dialogue node: " .. tostring(nextKey))
         self:reset()
@@ -163,6 +168,10 @@ function dialogue:advanceTo(nextKey, choice)
     end
 
     self.currentNode = nextNode
+    if nextNode.journal then
+        local j = nextNode.journal
+        journal:addEntry(j.id, j.text, j.tags)
+    end
 end
 
 --========================================

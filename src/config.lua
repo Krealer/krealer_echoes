@@ -40,7 +40,8 @@ config.controls = {
     interact = {"space", "return"},
     cancel   = {"escape"},
     confirm  = {"return"},
-    inventory = {"i"}
+    inventory = {"i"},
+    journal  = {"j"}
 }
 
 return config

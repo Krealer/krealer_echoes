@@ -68,3 +68,8 @@ end
 function input:isJournalToggle(key)
     return self:matches(key, "journal")
 end
+
+-- Optional stealth modifier key
+function input:isStealth()
+    return love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift") or love.keyboard.isDown("l")
+end

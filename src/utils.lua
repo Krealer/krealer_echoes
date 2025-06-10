@@ -16,6 +16,12 @@ function utils.isSamePos(x1, y1, x2, y2)
     return x1 == x2 and y1 == y2
 end
 
+-- Check if a coordinate falls within a rectangular zone
+function utils.isInZone(x, y, zone)
+    if not zone then return false end
+    return x >= zone.x1 and x <= zone.x2 and y >= zone.y1 and y <= zone.y2
+end
+
 -- Deep copy a table (used to duplicate templates without linking)
 function utils.deepcopy(orig)
     local orig_type = type(orig)

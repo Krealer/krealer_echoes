@@ -45,6 +45,12 @@ game.skillsUnlocked = {}
 -- Stored journal logs
 game.journalEntries = {}
 
+-- Current alert level from Null surveillance systems
+game.alertLevel = 0
+
+-- Per-zone timers tracking how long Krealer has been detected
+game.surveillanceTimers = {}
+
 --========================================
 -- Game boot logic (call in love.load)
 --========================================

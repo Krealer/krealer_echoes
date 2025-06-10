@@ -91,4 +91,22 @@ function utils.getTilesInViewCone(x, y, direction, range)
     return tiles
 end
 
+-- Simple delay helper storing callbacks
+local pendingDelays = {}
+
+function utils.delay(seconds, callback)
+    table.insert(pendingDelays, {t = seconds, cb = callback})
+end
+
+function utils.updateDelays(dt)
+    for i = #pendingDelays, 1, -1 do
+        local d = pendingDelays[i]
+        d.t = d.t - dt
+        if d.t <= 0 then
+            d.cb()
+            table.remove(pendingDelays, i)
+        end
+    end
+end
+
 return utils

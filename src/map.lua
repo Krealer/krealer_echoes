@@ -5,6 +5,7 @@
 --========================================
 
 local entityManager = require("src.entities.entity_manager")
+local state = require("src.state")
 
 local map = {}
 
@@ -53,7 +54,8 @@ function map.draw(tileGrid)
     -- Draw map tiles
     for y = 1, #tileGrid do
         for x = 1, #tileGrid[y] do
-            local tile = tileGrid[y][x]
+            local tileData = tileGrid[y][x]
+            local tile = type(tileData) == "table" and tileData.tile or tileData
             if tile == 1 then
                 love.graphics.setColor(0.2, 0.2, 0.2) -- Wall
             else
@@ -71,12 +73,28 @@ function map.draw(tileGrid)
     love.graphics.pop() -- Reset transform for UI
 end
 
+-- Update per-frame for map triggers
+function map.update(dt)
+    if not currentMap or not currentMap.tiles then return end
+
+    local tileData = currentMap.tiles[player.y] and currentMap.tiles[player.y][player.x]
+    if type(tileData) == "table" and tileData.echo_trigger then
+        local id = tileData.id or (game.flags.currentMap .. ":" .. player.x .. ":" .. player.y)
+        if not game.flags.echoFlags[id] then
+            game.flags.echoFlags[id] = true
+            state:set("echo", { text = tileData.text, duration = tileData.duration or 1.5 })
+        end
+    end
+end
+
 -- Check if a tile is walkable
 function map.isWalkable(x, y)
     if x < 1 or y < 1 or x > config.mapWidth or y > config.mapHeight then
         return false
     end
-    return currentMap.tiles[y][x] == 0
+    local data = currentMap.tiles[y][x]
+    local tile = type(data) == "table" and data.tile or data
+    return tile == 0
 end
 
 return map

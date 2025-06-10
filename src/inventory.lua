@@ -6,6 +6,8 @@
 
 inventory = {}
 
+local game = rawget(_G, "game")
+
 -- Holds item entries like:
 -- { name = "Null Salve", type = "healing", effect = 25 }
 inventory.items = {}
@@ -92,16 +94,29 @@ function inventory:draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("== INVENTORY ==", 20, 30)
 
+    local y = 40
     if #self.items == 0 then
-        love.graphics.print("Empty.", 40, 60)
-        return
+        love.graphics.print("Empty.", 40, y)
+    else
+        for i, item in ipairs(self.items) do
+            love.graphics.print(i .. ". " .. item.name .. " [" .. item.type .. "]", 40, y + i * 20)
+        end
     end
 
-    for i, item in ipairs(self.items) do
-        love.graphics.print(i .. ". " .. item.name .. " [" .. item.type .. "]", 40, 40 + i * 20)
+    y = y + (#self.items + 2) * 20
+    love.graphics.print("== SKILLS ==", 20, y)
+    local skills = (game and game.skillsUnlocked) or {}
+    local offset = y + 20
+    if next(skills) == nil then
+        love.graphics.print("None unlocked.", 40, offset)
+    else
+        for name,_ in pairs(skills) do
+            love.graphics.print("- " .. name, 40, offset)
+            offset = offset + 20
+        end
     end
 
-    love.graphics.print("[Enter] Use  |  [Esc] Back", 20, 300)
+    love.graphics.print("[Enter] Use  |  [Esc] Back", 20, offset + 20)
 end
 
 --========================================

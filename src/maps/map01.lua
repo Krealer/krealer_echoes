@@ -4,6 +4,8 @@
 -- Contains grid layout and starting entities
 --========================================
 
+local entityManager = require("src.entities.entity_manager")
+
 local map = {}
 
 -- Map dimensions (same as config unless overridden)

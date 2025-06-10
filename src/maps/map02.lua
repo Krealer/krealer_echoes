@@ -3,6 +3,8 @@
 -- Second test map - continues from map01
 --========================================
 
+local entityManager = require("src.entities.entity_manager")
+
 local map = {}
 
 map.width = config.mapWidth

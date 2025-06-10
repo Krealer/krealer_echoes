@@ -21,6 +21,10 @@ map.tiles = {
     {1,1,1,1,1,1,1,1,1,1}
 }
 
+map.exits = {
+    { x = 1, y = 5, map = "map01", toX = 9, toY = 5 }
+}
+
 function map:load()
     entityManager:clear()
 

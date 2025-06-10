@@ -17,6 +17,7 @@ local interactions  = require("src.interactions")
 local dialogue      = require("src.dialogue")
 local inventory     = require("src.inventory")
 local combat        = require("src.combat")
+local traits        = require("src.traits")
 
 --========================================
 -- love.load: Called once on game startup
@@ -27,6 +28,7 @@ function love.load()
 
     -- Boot core systems
     game:init()
+    traits:add("Emotionless")
 
     -- Load default map
     local initialMap = require("src.maps.map01")

@@ -43,6 +43,8 @@ function exploration_state:keypressed(key)
     if input:matches(key, config.controls.interact) then
         interactions.check()
         timer = interactionCooldown
+    elseif key == "f2" then
+        state:set("controls")
     end
 end
 

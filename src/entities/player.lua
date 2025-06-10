@@ -56,6 +56,8 @@ function player:tryMove(dx, dy)
     self.x = newX
     self.y = newY
     moveTimer = moveCooldown
+
+    map.checkExit(self.x, self.y)
 end
 
 --========================================

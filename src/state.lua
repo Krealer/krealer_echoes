@@ -17,6 +17,7 @@ local exploration = require("src.states.exploration_state")
 local dialogue    = require("src.states.dialogue_state")
 local combat      = require("src.states.combat_state")
 local inventoryUI = require("src.states.inventory_state")
+local controlsUI  = require("src.states.controls_state")
 
 --========================================
 -- Set the current state and optional context
@@ -35,6 +36,8 @@ function state:set(newState, context)
         combat:start(context.enemy)
     elseif newState == "inventory" then
         inventoryUI:enter(context)
+    elseif newState == "controls" then
+        controlsUI:enter(context)
     end
 end
 
@@ -57,6 +60,8 @@ function state:update(dt)
         combat:update(dt)
     elseif currentState == "inventory" then
         inventoryUI:update(dt)
+    elseif currentState == "controls" then
+        controlsUI:update(dt)
     end
 end
 
@@ -75,6 +80,8 @@ function state:draw()
     elseif currentState == "inventory" then
         exploration:draw() -- underlying map stays
         inventoryUI:draw()
+    elseif currentState == "controls" then
+        controlsUI:draw()
     end
 end
 
@@ -90,5 +97,7 @@ function state:keypressed(key)
         combat:keypressed(key)
     elseif currentState == "inventory" then
         inventoryUI:keypressed(key)
+    elseif currentState == "controls" then
+        controlsUI:keypressed(key)
     end
 end

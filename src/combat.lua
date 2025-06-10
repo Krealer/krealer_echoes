@@ -6,6 +6,8 @@
 
 combat = {}
 
+local traits = require("src.traits")
+
 -- Combat context
 combat.active = false
 combat.playerTurn = true

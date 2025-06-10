@@ -8,6 +8,29 @@ local entityManager = require("src.entities.entity_manager")
 
 local map = {}
 
+-- Load a map by name and optionally position the player
+function map.loadMap(name, spawn)
+    local newMap = require("src.maps." .. name)
+    currentMap = newMap
+    game.flags.currentMap = name
+    currentMap:load()
+    if spawn then
+        player.x = spawn.x or player.x
+        player.y = spawn.y or player.y
+    end
+end
+
+-- Check if player is on an exit tile and trigger transition
+function map.checkExit(x, y)
+    if not currentMap.exits then return end
+    for _, ex in ipairs(currentMap.exits) do
+        if ex.x == x and ex.y == y then
+            map.loadMap(ex.map, { x = ex.toX, y = ex.toY })
+            break
+        end
+    end
+end
+
 -- Draw the tile grid with centering and scaling
 function map.draw(tileGrid)
     local tileSize = config.tileSize

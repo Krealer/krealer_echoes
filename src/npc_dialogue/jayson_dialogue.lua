@@ -8,12 +8,13 @@ return {
     start = {
         text = "You're not from around here, are you? You look... off.",
         choices = {
-            { text = "Your assessment is correct. Proceed.", next = "cold_ack" },
+            { text = "Your assessment is correct. Proceed.", next = "cold_ack", repChange = 1, historyKey = "trust" },
             { text = "I escaped something. I don't owe you more.", next = "defensive" },
             { text = "(Say nothing)", next = "silent" },
             { text = "I used to be one of them. I'm trying not to be.", next = "reveal" },
             { text = "Got any supplies?", next = "end_convo", reward = { name = "Medkit", type = "healing", effect = 20 } },
-            { text = "Where's the next zone?", next = "map_offer" }
+            { text = "Where's the next zone?", next = "map_offer" },
+            { text = "You can trust me.", next = "respect", repMin = 1 }
         }
     },
 

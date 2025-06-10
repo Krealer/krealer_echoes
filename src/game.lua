@@ -18,6 +18,8 @@ game.flags = {
     firstCombatWon = false,
     hasMetJayson = false,
     nullMentioned = false,
+    reputation = 0,
+    dialogueHistory = {}
 }
 
 --========================================

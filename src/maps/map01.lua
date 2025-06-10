@@ -24,6 +24,10 @@ map.tiles = {
     {1,1,1,1,1,1,1,1,1,1}
 }
 
+map.exits = {
+    { x = 10, y = 5, map = "map02", toX = 2, toY = 5 }
+}
+
 -- Load function: spawns entities on the map
 function map:load()
     entityManager:clear()

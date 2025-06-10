@@ -24,6 +24,7 @@ function exploration_state:update(dt)
 
     player:update(dt)
     npcAI:update(dt)
+    map.update(dt)
 
     for _, e in ipairs(entityManager.entities) do
         if e.visionRange then

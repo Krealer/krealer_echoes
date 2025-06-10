@@ -18,6 +18,7 @@ local dialogue    = require("src.states.dialogue_state")
 local combat      = require("src.states.combat_state")
 local inventoryUI = require("src.states.inventory_state")
 local controlsUI  = require("src.states.controls_state")
+local echo        = require("src.states.echo_state")
 
 --========================================
 -- Set the current state and optional context
@@ -43,6 +44,8 @@ function state:set(newState, context)
         inventoryUI:enter(context)
     elseif newState == "controls" then
         controlsUI:enter(context)
+    elseif newState == "echo" then
+        echo:enter(context)
     end
 end
 
@@ -67,6 +70,8 @@ function state:update(dt)
         inventoryUI:update(dt)
     elseif currentState == "controls" then
         controlsUI:update(dt)
+    elseif currentState == "echo" then
+        echo:update(dt)
     end
 end
 
@@ -87,6 +92,8 @@ function state:draw()
         inventoryUI:draw()
     elseif currentState == "controls" then
         controlsUI:draw()
+    elseif currentState == "echo" then
+        echo:draw()
     end
 end
 
@@ -104,5 +111,7 @@ function state:keypressed(key)
         inventoryUI:keypressed(key)
     elseif currentState == "controls" then
         controlsUI:keypressed(key)
+    elseif currentState == "echo" then
+        echo:keypressed(key)
     end
 end

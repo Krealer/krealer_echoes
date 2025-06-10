@@ -22,7 +22,8 @@ game.flags = {
     dialogueHistory = {},
     npc = {},                -- per-NPC persistent memory
     sharedFlags = {},        -- optional flags shared between NPCs
-    showFOV = false
+    showFOV = false,
+    echoFlags = {}
 }
 
 --========================================

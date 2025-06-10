@@ -46,6 +46,7 @@ end
 -- love.update: Called every frame
 --========================================
 function love.update(dt)
+    utils.updateDelays(dt)
     state:update(dt)
 end
 

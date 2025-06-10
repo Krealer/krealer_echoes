@@ -24,6 +24,11 @@ map.tiles = {
     {1,1,1,1,1,1,1,1,1,1}
 }
 
+-- Zones monitored by Null surveillance
+map.surveillanceZones = {
+    { x1 = 3, y1 = 4, x2 = 7, y2 = 6 }
+}
+
 map.exits = {
     { x = 10, y = 5, map = "map02", toX = 2, toY = 5 }
 }

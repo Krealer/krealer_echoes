@@ -77,6 +77,25 @@ end
 function map.update(dt)
     if not currentMap or not currentMap.tiles then return end
 
+    -- Handle surveillance zones
+    if currentMap.surveillanceZones then
+        for i, zone in ipairs(currentMap.surveillanceZones) do
+            if utils.isInZone(player.x, player.y, zone) then
+                local inc = dt
+                if input.isStealth and input:isStealth() then
+                    inc = inc * 0.5
+                end
+                game.surveillanceTimers[i] = (game.surveillanceTimers[i] or 0) + inc
+                if game.surveillanceTimers[i] >= (zone.threshold or 3) then
+                    game.surveillanceTimers[i] = 0
+                    utils.triggerZone("surveillance_trigger")
+                end
+            else
+                game.surveillanceTimers[i] = 0
+            end
+        end
+    end
+
     local tileData = currentMap.tiles[player.y] and currentMap.tiles[player.y][player.x]
     if type(tileData) == "table" then
         if tileData.echo_trigger then

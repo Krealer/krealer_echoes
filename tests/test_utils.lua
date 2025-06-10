@@ -12,6 +12,12 @@ describe("utils", function()
     assert.is_false(utils.isSamePos(1,2,2,1))
   end)
 
+  it("checks coordinates inside zones", function()
+    local zone = {x1=1, y1=1, x2=3, y2=3}
+    assert.is_true(utils.isInZone(2,2,zone))
+    assert.is_false(utils.isInZone(4,2,zone))
+  end)
+
   it("deepcopies tables", function()
     local orig = {a=1,b={c=2}}
     local copy = utils.deepcopy(orig)

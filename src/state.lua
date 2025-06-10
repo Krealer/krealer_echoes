@@ -56,6 +56,13 @@ function state:get()
     return currentState
 end
 
+-- Called by zone scripts to enact state changes
+function state:processZoneResult(result)
+    if type(result) == "table" and result.state then
+        self:set(result.state, result.context)
+    end
+end
+
 --========================================
 -- Update dispatcher
 --========================================

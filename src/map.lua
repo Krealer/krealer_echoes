@@ -78,11 +78,17 @@ function map.update(dt)
     if not currentMap or not currentMap.tiles then return end
 
     local tileData = currentMap.tiles[player.y] and currentMap.tiles[player.y][player.x]
-    if type(tileData) == "table" and tileData.echo_trigger then
-        local id = tileData.id or (game.flags.currentMap .. ":" .. player.x .. ":" .. player.y)
-        if not game.flags.echoFlags[id] then
-            game.flags.echoFlags[id] = true
-            state:set("echo", { text = tileData.text, duration = tileData.duration or 1.5 })
+    if type(tileData) == "table" then
+        if tileData.echo_trigger then
+            local id = tileData.id or (game.flags.currentMap .. ":" .. player.x .. ":" .. player.y)
+            if not game.flags.echoFlags[id] then
+                game.flags.echoFlags[id] = true
+                state:set("echo", { text = tileData.text, duration = tileData.duration or 1.5 })
+            end
+        end
+
+        if tileData.zone then
+            utils.triggerZone(tileData.zone)
         end
     end
 end

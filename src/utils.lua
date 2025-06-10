@@ -126,6 +126,12 @@ function utils.triggerZone(name)
     zone.trigger(name)
 end
 
+-- Heal the player by amounts or to full when nil
+function utils.healPlayer(hp, mp)
+    combat.player.hp = math.min(combat.player.maxHp, (combat.player.hp or 0) + (hp or combat.player.maxHp))
+    combat.player.mp = math.min(combat.player.maxMp, (combat.player.mp or 0) + (mp or combat.player.maxMp))
+end
+
 -- Roll to resist Null conditioning influence
 function utils.rollConditioningCheck(difficulty)
     difficulty = difficulty or 50

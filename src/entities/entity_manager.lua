@@ -11,7 +11,7 @@ entityManager.entities = {}
 
 --========================================
 -- Add a new entity to the map
--- Required fields: x, y, type = "npc"/"enemy"/"object", name
+-- Required fields: x, y, type = "npc"/"enemy"/"object"/"shrine", name
 --========================================
 function entityManager:add(entity)
     assert(entity.x and entity.y, "Entity must have x and y")
@@ -67,6 +67,9 @@ function entityManager:draw()
         elseif e.type == "object" then
             char = "O"
             color = config.color.object
+        elseif e.type == "shrine" then
+            char = "S"
+            color = config.color.shrine or config.color.object
         end
 
         love.graphics.setColor(color)

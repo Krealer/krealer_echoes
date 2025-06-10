@@ -37,7 +37,8 @@ function map:load()
 
     -- Place objects
     entityManager:add({ x = 4, y = 4, type = "object", name = "Chest", opened = false })
-    entityManager:add({ x = 5, y = 6, type = "object", name = "Healing Pit" })
+    -- Ritual pit that fully restores HP/MP when interacted with
+    entityManager:add({ x = 5, y = 6, type = "shrine", name = "Healing Pit" })
 
     -- Place enemies
     entityManager:add({ x = 7, y = 7, type = "enemy", name = "Null Agent", hp = 60, dmg = 12 })

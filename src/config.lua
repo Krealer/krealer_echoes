@@ -21,6 +21,7 @@ config.color = {
     npc    = {0, 1, 0},         -- Green
     enemy  = {1, 0, 0},         -- Red
     object = {1, 1, 0},         -- Yellow
+    shrine = {0.5, 0.8, 1},     -- Light blue
     player = {1, 1, 1},         -- White
     grid   = {0.3, 0.3, 0.3}    -- Grey grid lines
 }

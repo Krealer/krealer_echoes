@@ -18,7 +18,7 @@ game.flags = {
     firstCombatWon = false,
     hasMetJayson = false,
     nullMentioned = false,
-    reputation = 0,
+    reputation = {},
     dialogueHistory = {},
     npc = {},                -- per-NPC persistent memory
     sharedFlags = {},        -- optional flags shared between NPCs
@@ -83,4 +83,16 @@ function game:drawFOVOverlay()
             end
         end
     end
+end
+
+--========================================
+-- Reputation helpers
+--========================================
+function game:addReputation(region, amount)
+    if not region then return end
+    self.flags.reputation[region] = (self.flags.reputation[region] or 0) + (amount or 0)
+end
+
+function game:getReputation(region)
+    return self.flags.reputation[region] or 0
 end

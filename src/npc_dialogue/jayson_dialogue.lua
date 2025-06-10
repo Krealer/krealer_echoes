@@ -16,7 +16,8 @@ return {
             { text = "I used to be one of them. I'm trying not to be.", next = "reveal" },
             { text = "Got any supplies?", next = "end_convo", reward = { name = "Medkit", type = "healing", effect = 20 } },
             { text = "Where's the next zone?", next = "map_offer" },
-            { text = "You can trust me.", next = "respect", repMin = 1 }
+            { text = "You can trust me.", next = "respect", repMin = 1 },
+            { text = "Folks in Hilltown vouch for me.", next = "rep_ack", requiresReputation = { region = "hilltown", min = 1 } }
         }
     },
 
@@ -92,12 +93,20 @@ return {
         }
     },
 
+    rep_ack = {
+        text = "Huh, word travels fast around here. Keep your nose clean, then.",
+        choices = {
+            { text = "Understood.", next = "end_convo" }
+        }
+    },
+
     trust_repeat = {
         text = "Hey, good to see you again. Need anything?",
         requires = { trusted = true },
         choices = {
             { text = "Any supplies?", next = "end_convo", reward = { name = "Medkit", type = "healing", effect = 20 } },
-            { text = "Just checking in.", next = "end_convo" }
+            { text = "Just checking in.", next = "end_convo" },
+            { text = "Everyone in Hilltown likes me now.", next = "rep_ack", requiresReputation = { region = "hilltown", min = 1 } }
         }
     },
 

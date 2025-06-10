@@ -110,6 +110,17 @@ function utils.updateDelays(dt)
     end
 end
 
+-- Debug helper to display reputation values
+function utils.drawReputation(x, y)
+    if not game or not game.flags or not game.flags.reputation then return end
+    local offset = 0
+    love.graphics.setColor(1,1,1)
+    for region, value in pairs(game.flags.reputation) do
+        love.graphics.print(region .. ": " .. tostring(value), x, y + offset)
+        offset = offset + 15
+    end
+end
+
 -- Trigger a zone event by name
 function utils.triggerZone(name)
     zone.trigger(name)

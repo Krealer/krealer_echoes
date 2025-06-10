@@ -12,6 +12,44 @@ combat.playerTurn = true
 combat.enemy = nil
 local enemyTimer = 0
 
+-- Process status effects on an entity
+local function processStatuses(entity)
+    for i = #entity.status, 1, -1 do
+        local s = entity.status[i]
+        if s.type == "Bleed" then
+            entity.hp = entity.hp - 5
+            print(entity.name .. " bleeds for 5 damage.")
+        end
+        s.duration = s.duration - 1
+        if s.duration <= 0 then
+            table.remove(entity.status, i)
+        end
+    end
+end
+
+-- Apply a status effect to an entity
+local function addStatus(entity, status)
+    if not status then return end
+    local copy = { type = status.type, duration = status.duration }
+    table.insert(entity.status, copy)
+    print(entity.name .. " afflicted with " .. status.type .. " (" .. status.duration .. " turns)")
+end
+
+-- Calculate damage considering statuses on the target
+local function calcDamage(base, target)
+    for _, s in ipairs(target.status) do
+        if s.type == "Guard Break" then
+            return base + 5
+        end
+    end
+    return base
+end
+
+-- Begin the turn for an entity (tick statuses)
+local function startTurn(entity)
+    processStatuses(entity)
+end
+
 -- Krealer's combat stats (expandable with passives/status)
 combat.player = {
     name = "Krealer",
@@ -20,9 +58,12 @@ combat.player = {
     maxHp = 100,
     maxMp = 30,
     skills = {
-        { name = "Precision Strike", cost = 5, dmg = 20 },
-        { name = "Analyze Weakness", cost = 3, dmg = 10 }
+        { name = "Precision Strike", cost = 5, dmg = 20,
+          status = { type = "Bleed", duration = 2 } },
+        { name = "Analyze Weakness", cost = 3, dmg = 10,
+          status = { type = "Guard Break", duration = 2 } }
     },
+    status = {},
     passives = {}
 }
 
@@ -43,10 +84,13 @@ function combat:start(enemyData)
     self.enemy = newEnemy(enemyData.name, enemyData.hp, enemyData.dmg)
     self.player.hp = self.player.maxHp
     self.player.mp = self.player.maxMp
+    self.player.status = {}
+    self.enemy.status = {}
     self.playerTurn = true
     self.active = true
     enemyTimer = 0.5
     print("[Combat started with " .. self.enemy.name .. "]")
+    startTurn(self.player)
 end
 
 --========================================
@@ -62,13 +106,19 @@ function combat:useSkill(index)
     end
 
     self.player.mp = self.player.mp - skill.cost
-    self.enemy.hp = self.enemy.hp - skill.dmg
+    local dmg = calcDamage(skill.dmg, self.enemy)
+    self.enemy.hp = self.enemy.hp - dmg
 
-    print("Krealer used " .. skill.name .. " (−" .. skill.cost .. " MP, dealt " .. skill.dmg .. " damage)")
+    print("Krealer used " .. skill.name .. " (−" .. skill.cost .. " MP, dealt " .. dmg .. " damage)")
+
+    if skill.status then
+        addStatus(self.enemy, skill.status)
+    end
 
     self:checkOutcome()
     if self.active then
         self.playerTurn = false
+        startTurn(self.enemy)
     end
 end
 
@@ -76,7 +126,7 @@ end
 -- Enemy turn (basic AI)
 --========================================
 function combat:enemyAction()
-    local dmg = self.enemy.dmg
+    local dmg = calcDamage(self.enemy.dmg, self.player)
     self.player.hp = self.player.hp - dmg
     print(self.enemy.name .. " strikes for " .. dmg .. " damage.")
 
@@ -84,6 +134,7 @@ function combat:enemyAction()
     if self.active then
         self.playerTurn = true
         enemyTimer = 0.5
+        startTurn(self.player)
     end
 end
 
@@ -110,8 +161,17 @@ function combat:draw()
 
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("== COMBAT ==", 10, 50)
-    love.graphics.print("Enemy: " .. self.enemy.name .. " | HP: " .. self.enemy.hp, 10, 70)
-    love.graphics.print("You: " .. self.player.hp .. " HP / " .. self.player.mp .. " MP", 10, 90)
+    local enemyStatus = ""
+    for _, s in ipairs(self.enemy.status) do
+        enemyStatus = enemyStatus .. " " .. s.type .. "(" .. s.duration .. ")"
+    end
+    love.graphics.print("Enemy: " .. self.enemy.name .. " | HP: " .. self.enemy.hp .. enemyStatus, 10, 70)
+
+    local playerStatus = ""
+    for _, s in ipairs(self.player.status) do
+        playerStatus = playerStatus .. " " .. s.type .. "(" .. s.duration .. ")"
+    end
+    love.graphics.print("You: " .. self.player.hp .. " HP / " .. self.player.mp .. " MP" .. playerStatus, 10, 90)
 
     if self.playerTurn then
         love.graphics.print("Select a skill:", 10, 120)

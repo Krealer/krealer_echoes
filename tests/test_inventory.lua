@@ -36,6 +36,15 @@ describe("inventory", function()
     assert.are.equal(0, #inventory.items)
   end)
 
+  it("applies stat boosts", function()
+    local item = { name = "Doping", type = "boost", stat = "mp", effect = 5 }
+    inventory:add(item)
+    combat.player.mp = 5
+    inventory:use(item)
+    assert.are.equal(10, combat.player.mp)
+    assert.are.equal(0, #inventory.items)
+  end)
+
   it("finds index of an item", function()
     local item = { name = "FindMe" }
     inventory:add(item)

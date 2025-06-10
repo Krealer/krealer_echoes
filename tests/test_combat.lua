@@ -22,4 +22,14 @@ describe("combat status effects", function()
     combat:useSkill(1)
     assert.are.equal(0, combat.enemy.hp)
   end)
+
+  it("consumes turn when using an item", function()
+    combat:start({name="Dummy", hp=40, dmg=5})
+    inventory = require("src.inventory")
+    inventory.items = {}
+    local item = {name="Small Potion", type="healing", effect=10}
+    table.insert(inventory.items, item)
+    combat:useItem(item)
+    assert.is_false(combat.playerTurn)
+  end)
 end)

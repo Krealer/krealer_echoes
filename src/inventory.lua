@@ -50,6 +50,17 @@ function inventory:use(item)
         print("Consumed " .. item.name .. ". Restored " .. gain .. " MP.")
         self:remove(self:indexOf(item))
 
+    elseif item.type == "boost" then
+        local stat = item.stat
+        local amount = item.effect or 0
+        if stat and combat.player[stat] then
+            combat.player[stat] = combat.player[stat] + amount
+            print("Used " .. item.name .. ". " .. stat .. " increased by " .. amount .. ".")
+        else
+            print("Used " .. item.name .. ".")
+        end
+        self:remove(self:indexOf(item))
+
     else
         print("Used " .. item.name .. ".")
         self:remove(self:indexOf(item))

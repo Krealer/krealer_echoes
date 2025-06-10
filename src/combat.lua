@@ -123,6 +123,21 @@ function combat:useSkill(index)
 end
 
 --========================================
+-- Use an inventory item during player's turn
+--========================================
+function combat:useItem(item)
+    if not item then return end
+
+    inventory:use(item)
+
+    self:checkOutcome()
+    if self.active then
+        self.playerTurn = false
+        startTurn(self.enemy)
+    end
+end
+
+--========================================
 -- Enemy turn (basic AI)
 --========================================
 function combat:enemyAction()
@@ -193,6 +208,8 @@ function combat:keypressed(key)
     local index = tonumber(key)
     if index and index >= 1 and index <= #self.player.skills then
         self:useSkill(index)
+    elseif input:matches(key, config.controls.inventory) then
+        state:set("inventory", { returnTo = "combat" })
     elseif key == "escape" then
         print("[Combat manually exited]")
         self.active = false

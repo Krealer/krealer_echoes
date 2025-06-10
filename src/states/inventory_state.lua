@@ -7,10 +7,12 @@
 local inventory_state = {}
 
 local selectedIndex = 1
+local returnState = "exploration"
 
-function inventory_state:enter()
+function inventory_state:enter(context)
     print("[Inventory opened]")
     selectedIndex = 1
+    returnState = (context and context.returnTo) or "exploration"
 end
 
 function inventory_state:update(dt)
@@ -45,9 +47,10 @@ function inventory_state:keypressed(key)
         local item = items[selectedIndex]
         if item then
             inventory:use(item)
+            state:set(returnState)
         end
     elseif key == "escape" then
-        state:set("exploration")
+        state:set(returnState)
     end
 end
 

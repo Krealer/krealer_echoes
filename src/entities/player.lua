@@ -64,7 +64,7 @@ end
 function player:keypressed(key)
     if key == "space" or key == "return" then
         interactions.check()
-    elseif key == "i" then
+    elseif input:matches(key, config.controls.inventory) then
         state:set("inventory")
     end
 end

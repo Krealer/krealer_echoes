@@ -34,7 +34,7 @@ function state:set(newState, context)
     elseif newState == "combat" then
         combat:start(context.enemy)
     elseif newState == "inventory" then
-        inventoryUI:enter()
+        inventoryUI:enter(context)
     end
 end
 

@@ -38,7 +38,8 @@ config.controls = {
     right    = {"d", "right"},
     interact = {"space", "return"},
     cancel   = {"escape"},
-    confirm  = {"return"}
+    confirm  = {"return"},
+    inventory = {"i"}
 }
 
 return config

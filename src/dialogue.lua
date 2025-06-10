@@ -24,6 +24,14 @@ local function meetsRequirements(req, memory, shared)
     return true
 end
 
+local function meetsRepRequirement(req)
+    if not req then return true end
+    local current = game:getReputation(req.region)
+    if req.min and current < req.min then return false end
+    if req.max and current > req.max then return false end
+    return true
+end
+
 -- Current dialogue context
 dialogue.tree = nil
 dialogue.currentNode = nil
@@ -85,7 +93,14 @@ function dialogue:getChoices()
 
     local list = {}
     for _, choice in ipairs(self.currentNode.choices) do
-        if not choice.requires or meetsRequirements(choice.requires, self.memory, self.shared) then
+        local ok = true
+        if choice.requires and not meetsRequirements(choice.requires, self.memory, self.shared) then
+            ok = false
+        end
+        if ok and not meetsRepRequirement(choice.requiresReputation) then
+            ok = false
+        end
+        if ok then
             table.insert(list, choice)
         end
     end
@@ -106,6 +121,10 @@ function dialogue:advanceTo(nextKey)
     local nextNode = self.tree[nextKey]
     if nextNode.requires and not meetsRequirements(nextNode.requires, self.memory, self.shared) then
         print("[Dialogue] Requirements not met for node: " .. tostring(nextKey))
+        return
+    end
+    if nextNode.requiresReputation and not meetsRepRequirement(nextNode.requiresReputation) then
+        print("[Dialogue] Reputation not sufficient for node: " .. tostring(nextKey))
         return
     end
 

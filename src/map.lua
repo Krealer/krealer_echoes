@@ -5,7 +5,10 @@
 --========================================
 
 local entityManager = require("src.entities.entity_manager")
-local state = require("src.state")
+-- State is required lazily to avoid circular dependencies
+local function getState()
+    return require("src.state")
+end
 
 local map = {}
 
@@ -102,7 +105,7 @@ function map.update(dt)
             local id = tileData.id or (game.flags.currentMap .. ":" .. player.x .. ":" .. player.y)
             if not game.flags.echoFlags[id] then
                 game.flags.echoFlags[id] = true
-                state:set("echo", { text = tileData.text, duration = tileData.duration or 1.5 })
+                getState():set("echo", { text = tileData.text, duration = tileData.duration or 1.5 })
             end
         end
 

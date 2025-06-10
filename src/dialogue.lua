@@ -5,11 +5,31 @@
 --========================================
 
 local dialogue = {}
+local game = require("src.game")
+
+-- Helper to check memory requirements
+local function meetsRequirements(req, memory, shared)
+    if not req then return true end
+    memory = memory or {}
+    shared = shared or {}
+    for k, v in pairs(req) do
+        local val = memory[k]
+        if val == nil then
+            val = shared[k]
+        end
+        if val ~= v then
+            return false
+        end
+    end
+    return true
+end
 
 -- Current dialogue context
 dialogue.tree = nil
 dialogue.currentNode = nil
 dialogue.context = nil
+dialogue.memory = nil
+dialogue.shared = nil
 
 --========================================
 -- Start a new dialogue tree using a context (target.npc must define .dialogue)
@@ -23,6 +43,9 @@ function dialogue:start(context)
         return
     end
 
+    self.memory = game.flags.npc[npc.id or npc.dialogue] or {}
+    self.shared = game.flags.sharedFlags
+
     -- Dynamically require the NPC's dialogue file
     local success, tree = pcall(require, "src.npc_dialogue." .. npc.dialogue)
     if not success or not tree or not tree.start then
@@ -31,7 +54,20 @@ function dialogue:start(context)
     end
 
     self.tree = tree
-    self.currentNode = tree.start
+    local startNode = context.start or tree.start
+    if type(startNode) == "string" then
+        startNode = tree[startNode] or tree.start
+    end
+    if startNode.requires and not meetsRequirements(startNode.requires, self.memory, self.shared) then
+        -- unmet start requirements simply skip to fallback node if defined
+        if startNode.unmet then
+            startNode = tree[startNode.unmet]
+        else
+            print("[Dialogue] Start node requirements unmet")
+            startNode = tree.start
+        end
+    end
+    self.currentNode = startNode
 end
 
 --========================================
@@ -39,6 +75,21 @@ end
 --========================================
 function dialogue:getCurrent()
     return self.currentNode
+end
+
+--========================================
+-- Return list of choices meeting requirements
+--========================================
+function dialogue:getChoices()
+    if not self.currentNode or not self.currentNode.choices then return {} end
+
+    local list = {}
+    for _, choice in ipairs(self.currentNode.choices) do
+        if not choice.requires or meetsRequirements(choice.requires, self.memory, self.shared) then
+            table.insert(list, choice)
+        end
+    end
+    return list
 end
 
 --========================================
@@ -52,8 +103,13 @@ function dialogue:advanceTo(nextKey)
         state:set("exploration")
         return
     end
+    local nextNode = self.tree[nextKey]
+    if nextNode.requires and not meetsRequirements(nextNode.requires, self.memory, self.shared) then
+        print("[Dialogue] Requirements not met for node: " .. tostring(nextKey))
+        return
+    end
 
-    self.currentNode = self.tree[nextKey]
+    self.currentNode = nextNode
 end
 
 --========================================
@@ -63,6 +119,8 @@ function dialogue:reset()
     self.tree = nil
     self.currentNode = nil
     self.context = nil
+    self.memory = nil
+    self.shared = nil
 end
 
 --========================================

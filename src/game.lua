@@ -19,7 +19,9 @@ game.flags = {
     hasMetJayson = false,
     nullMentioned = false,
     reputation = 0,
-    dialogueHistory = {}
+    dialogueHistory = {},
+    npc = {},                -- per-NPC persistent memory
+    sharedFlags = {}         -- optional flags shared between NPCs
 }
 
 --========================================

@@ -5,6 +5,17 @@
 --========================================
 
 local dialogue_state = {}
+local function meetsRequirements(req, npc)
+    if not req then return true end
+    local mem = npc and npc.memory or {}
+    local shared = game.flags.sharedFlags or {}
+    for k,v in pairs(req) do
+        local val = mem[k]
+        if val == nil then val = shared[k] end
+        if val ~= v then return false end
+    end
+    return true
+end
 
 local inventory = require("src.inventory")
 local game = require("src.game")
@@ -13,6 +24,7 @@ local traits = require("src.traits")
 -- Dialogue context (set when state is entered)
 local dialogueTree = nil
 local currentNode = nil
+local activeNPC = nil
 
 -- Called when dialogue begins
 function dialogue_state:enter(context)
@@ -22,6 +34,7 @@ function dialogue_state:enter(context)
     end
 
     dialogueTree = context.tree
+    activeNPC = context.npc
 
     if not dialogueTree.start then
         print("[Dialogue error] Tree missing 'start' node")
@@ -29,7 +42,19 @@ function dialogue_state:enter(context)
         return
     end
 
-    currentNode = dialogueTree.start
+    local startNode = context.start or dialogueTree.start
+    if type(startNode) == "string" then
+        startNode = dialogueTree[startNode]
+    end
+    if startNode.requires and not meetsRequirements(startNode.requires, activeNPC) then
+        if startNode.unmet then
+            startNode = dialogueTree[startNode.unmet]
+        else
+            print("[Dialogue] Start requirements unmet")
+            startNode = dialogueTree.start
+        end
+    end
+    currentNode = startNode
 
     if currentNode.onSelect then
         currentNode.onSelect()
@@ -58,6 +83,9 @@ function dialogue_state:draw()
         if choice.requiresTrait and not traits:has(choice.requiresTrait) then
             available = false
         end
+        if choice.requires and not meetsRequirements(choice.requires, activeNPC) then
+            available = false
+        end
         if available then
             love.graphics.setColor(1,1,1)
         else
@@ -78,6 +106,7 @@ function dialogue_state:keypressed(key)
         if choice.repMin and game.flags.reputation < choice.repMin then return end
         if choice.requiresHistory and not game.flags.dialogueHistory[choice.requiresHistory] then return end
         if choice.requiresTrait and not traits:has(choice.requiresTrait) then return end
+        if choice.requires and not meetsRequirements(choice.requires, activeNPC) then return end
 
         if choice.reward then
             inventory:add(choice.reward)
@@ -106,7 +135,9 @@ function dialogue_state:keypressed(key)
 
         local nextKey = choice.next
         local nextNode = nextKey and dialogueTree[nextKey]
-
+        if nextNode and nextNode.requires and not meetsRequirements(nextNode.requires, activeNPC) then
+            nextNode = nil
+        end
         if nextNode then
             currentNode = nextNode
             if currentNode.onSelect then

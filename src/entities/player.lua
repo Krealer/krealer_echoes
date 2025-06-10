@@ -6,6 +6,7 @@
 local map = require("src.map")
 local entityManager = require("src.entities.entity_manager")
 local interactions = require("src.interactions")
+local utils = require("src.utils")
 
 player = {}
 
@@ -78,4 +79,17 @@ function player:draw()
     local tile = config.tileSize
     love.graphics.setColor(config.color.player)
     love.graphics.print(config.playerSymbol, self.x * tile + 8, self.y * tile + 8)
+end
+
+--========================================
+-- Check if player is inside an entity's FOV
+--========================================
+function player:isInFOV(entity)
+    local tiles = utils.getTilesInViewCone(entity.x, entity.y, entity.facing, entity.visionRange or 0)
+    for _, t in ipairs(tiles) do
+        if utils.isSamePos(t.x, t.y, self.x, self.y) then
+            return true
+        end
+    end
+    return false
 end

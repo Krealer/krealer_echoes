@@ -16,6 +16,13 @@ entityManager.entities = {}
 function entityManager:add(entity)
     assert(entity.x and entity.y, "Entity must have x and y")
     assert(entity.type, "Entity must have a type")
+
+    if entity.type == "npc" or entity.type == "enemy" then
+        entity.visionRange = entity.visionRange or 3
+        entity.facing = entity.facing or "down"
+        entity.seenPlayer = entity.seenPlayer or false
+    end
+
     table.insert(self.entities, entity)
 end
 

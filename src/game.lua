@@ -21,7 +21,8 @@ game.flags = {
     reputation = 0,
     dialogueHistory = {},
     npc = {},                -- per-NPC persistent memory
-    sharedFlags = {}         -- optional flags shared between NPCs
+    sharedFlags = {},        -- optional flags shared between NPCs
+    showFOV = false
 }
 
 --========================================
@@ -63,4 +64,21 @@ function game:drawDebug(x, y)
     love.graphics.print("Player: " .. player.x .. "," .. player.y, x, y + 45)
     love.graphics.print("Map: " .. tostring(game.flags.currentMap), x, y + 60)
     love.graphics.print("HP: " .. combat.player.hp .. " | MP: " .. combat.player.mp, x, y + 75)
+end
+
+--========================================
+-- Draw fields of view for debugging
+--========================================
+function game:drawFOVOverlay()
+    if not game.flags.showFOV then return end
+    local tile = config.tileSize
+    love.graphics.setColor(0, 0.6, 1, 0.3)
+    for _, e in ipairs(entityManager.entities) do
+        if e.visionRange then
+            local tiles = utils.getTilesInViewCone(e.x, e.y, e.facing, e.visionRange)
+            for _, t in ipairs(tiles) do
+                love.graphics.rectangle("line", (t.x - 1) * tile, (t.y - 1) * tile, tile, tile)
+            end
+        end
+    end
 end

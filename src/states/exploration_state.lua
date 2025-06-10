@@ -8,6 +8,8 @@ local exploration_state = {}
 local map = require("src.map")
 local interactions = require("src.interactions")
 local npcAI = require("src.npc.ai")
+local entityManager = require("src.entities.entity_manager")
+local utils = require("src.utils")
 
 -- Optional: track time since last interaction or event
 local interactionCooldown = 0.1
@@ -22,6 +24,19 @@ function exploration_state:update(dt)
 
     player:update(dt)
     npcAI:update(dt)
+
+    for _, e in ipairs(entityManager.entities) do
+        if e.visionRange then
+            if player:isInFOV(e) then
+                e.seenPlayer = true
+                if e.hostile then
+                    interactions.alert(e)
+                end
+            else
+                e.seenPlayer = false
+            end
+        end
+    end
 end
 
 function exploration_state:draw()

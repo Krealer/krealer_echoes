@@ -6,6 +6,8 @@
 
 local dialogue_state = {}
 
+local inventory = require("src.inventory")
+
 -- Dialogue context (set when state is entered)
 local dialogueTree = nil
 local currentNode = nil
@@ -26,6 +28,10 @@ function dialogue_state:enter(context)
     end
 
     currentNode = dialogueTree.start
+
+    if currentNode.onSelect then
+        currentNode.onSelect()
+    end
 
     print("[Dialogue started]")
 end
@@ -50,12 +56,35 @@ function dialogue_state:keypressed(key)
 
     local index = tonumber(key)
     if index and currentNode.choices[index] then
-        local nextKey = currentNode.choices[index].next
-        local nextNode = dialogueTree[nextKey]
+        local choice = currentNode.choices[index]
+
+        if choice.reward then
+            inventory:add(choice.reward)
+        end
+
+        if choice.map then
+            local map = require("src.maps." .. choice.map)
+            currentMap = map
+            game.flags.currentMap = choice.map
+            currentMap:load()
+        end
+
+        if choice.state then
+            state:set(choice.state)
+            if choice.state ~= "dialogue" then
+                return
+            end
+        end
+
+        local nextKey = choice.next
+        local nextNode = nextKey and dialogueTree[nextKey]
 
         if nextNode then
             currentNode = nextNode
-        else
+            if currentNode.onSelect then
+                currentNode.onSelect()
+            end
+        elseif nextKey then
             print("[Dialogue node missing: " .. tostring(nextKey) .. "]")
             state:set("exploration")
         end

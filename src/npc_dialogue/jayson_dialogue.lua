@@ -11,7 +11,9 @@ return {
             { text = "Your assessment is correct. Proceed.", next = "cold_ack" },
             { text = "I escaped something. I don't owe you more.", next = "defensive" },
             { text = "(Say nothing)", next = "silent" },
-            { text = "I used to be one of them. I'm trying not to be.", next = "reveal" }
+            { text = "I used to be one of them. I'm trying not to be.", next = "reveal" },
+            { text = "Got any supplies?", next = "end_convo", reward = { name = "Medkit", type = "healing", effect = 20 } },
+            { text = "Where's the next zone?", next = "map_offer" }
         }
     },
 
@@ -56,8 +58,16 @@ return {
 
     npc_unsettled = {
         text = "Alright… you're strange. I'm gonna go.",
+        onSelect = function() print("[Jayson seems uneasy.]") end,
         choices = {
             { text = "(Say nothing)", next = "end_convo" }
+        }
+    },
+
+    map_offer = {
+        text = "There's an old facility east of here. I'll mark it for you.",
+        choices = {
+            { text = "(Travel there)", map = "map02", state = "exploration" }
         }
     },
 

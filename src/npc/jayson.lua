@@ -16,7 +16,7 @@ function jayson:onInteract()
 
     -- Load dialogue from external tree
     local dialogueTree = require("src.npc_dialogue.jayson_dialogue")
-    dialogue:start(dialogueTree)
+    state:set("dialogue", { tree = dialogueTree })
 
     -- Mark that we’ve initiated conversation
     jayson.hasSpoken = true

@@ -59,6 +59,10 @@ function player:tryMove(dx, dy)
     moveTimer = moveCooldown
 
     map.checkExit(self.x, self.y)
+    local tileData = currentMap.tiles[self.y] and currentMap.tiles[self.y][self.x]
+    if type(tileData) == "table" and tileData.zone then
+        utils.triggerZone(tileData.zone)
+    end
 end
 
 --========================================

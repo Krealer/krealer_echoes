@@ -4,6 +4,7 @@
 --========================================
 
 utils = {}
+local zone = require("src.zone")
 
 -- Clamp a value between a min and max
 function utils.clamp(value, min, max)
@@ -107,6 +108,11 @@ function utils.updateDelays(dt)
             table.remove(pendingDelays, i)
         end
     end
+end
+
+-- Trigger a zone event by name
+function utils.triggerZone(name)
+    zone.trigger(name)
 end
 
 return utils

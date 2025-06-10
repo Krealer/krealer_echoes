@@ -4,6 +4,10 @@
 -- Tracks session state, debug tools, and progression
 --========================================
 
+-- The game table stores global flags and helpers
+-- Expose it as a global for convenience but also
+-- return it at the end so modules that require
+-- this file receive the table instead of `true`.
 game = {}
 
 --========================================
@@ -120,3 +124,5 @@ end
 function game:getReputation(region)
     return self.flags.reputation[region] or 0
 end
+
+return game

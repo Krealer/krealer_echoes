@@ -8,17 +8,19 @@ local exploration = require("src.states.exploration_state")
 local echo_state = {}
 local timer = 0
 local text = ""
+local returnState = "exploration"
 
 function echo_state:enter(context)
     timer = (context and context.duration) or 1.5
     text = context and context.text or "Echoes of the Null..."
+    returnState = (context and context.returnState) or "exploration"
     print("[Echo trace triggered]")
 end
 
 function echo_state:update(dt)
     timer = timer - dt
     if timer <= 0 then
-        state:set("exploration")
+        state:set(returnState)
     end
 end
 

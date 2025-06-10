@@ -21,6 +21,16 @@ local controlsUI  = require("src.states.controls_state")
 local echo        = require("src.states.echo_state")
 
 --========================================
+-- Trigger a Null hallucination effect and return to current state
+--========================================
+function state:nullTrigger(context)
+    local prev = currentState
+    local ctx = context or {}
+    ctx.returnState = prev
+    self:set("echo", ctx)
+end
+
+--========================================
 -- Set the current state and optional context
 --========================================
 function state:set(newState, context)

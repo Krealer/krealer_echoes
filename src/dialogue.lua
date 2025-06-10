@@ -6,6 +6,7 @@
 
 local dialogue = {}
 local game = require("src.game")
+local psyche = require("src.psyche")
 
 -- Helper to check memory requirements
 local function meetsRequirements(req, memory, shared)
@@ -123,6 +124,9 @@ function dialogue:getChoices()
         if ok and not meetsConditioning(choice.requiresConditioning) then
             ok = false
         end
+        if ok and choice.requiresSkill and not game.skillsUnlocked[choice.requiresSkill] then
+            ok = false
+        end
         if ok then
             table.insert(list, choice)
         end
@@ -134,7 +138,10 @@ end
 -- Advance to a new node by key
 -- Called when player makes a choice
 --========================================
-function dialogue:advanceTo(nextKey)
+function dialogue:advanceTo(nextKey, choice)
+    if choice and choice.psycheTag then
+        psyche:add(choice.psycheTag, 1)
+    end
     if not self.tree or not self.tree[nextKey] then
         print("[Warning] Missing dialogue node: " .. tostring(nextKey))
         self:reset()

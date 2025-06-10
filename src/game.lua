@@ -31,6 +31,17 @@ game.flags = {
 -- Conditioning metrics representing Null influence over Krealer
 game.conditioning = { influence = 70, resistance = 0 }
 
+-- Psyche progression metrics
+game.psyche = {
+    silence = 0,
+    logic = 0,
+    empathy = 0,
+    manipulation = 0
+}
+
+-- Set of unlocked psyche-based skills
+game.skillsUnlocked = {}
+
 --========================================
 -- Game boot logic (call in love.load)
 --========================================

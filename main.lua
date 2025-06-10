@@ -18,6 +18,7 @@ local dialogue      = require("src.dialogue")
 local inventory     = require("src.inventory")
 local combat        = require("src.combat")
 local traits        = require("src.traits")
+local psyche        = require("src.psyche")
 
 --========================================
 -- love.load: Called once on game startup
@@ -70,6 +71,9 @@ function love.keypressed(key)
         return
     elseif key == "v" then
         game.flags.showFOV = not game.flags.showFOV
+        return
+    elseif key == "p" then
+        psyche:printUnlocked()
         return
     end
 
